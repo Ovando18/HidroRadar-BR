@@ -94,7 +94,9 @@ streamlit run app.py
 
 O app abre em `http://localhost:8501`. A primeira carga baixa as bases da ANEEL (pode levar alguns segundos); as seguintes usam o cache de 24 h. Para forçar a atualização, use **"Recarregar bases da ANEEL"** na seção *Sobre os dados*.
 
-### Gerar/atualizar o fallback local (recomendado antes do deploy)
+### Gerar/atualizar o fallback local (obrigatório para o Streamlit Cloud)
+
+> Os servidores da ANEEL (`dadosabertos.aneel.gov.br` e até `www.aneel.gov.br`) recusam conexões vindas de fora do Brasil: o handshake TLS é derrubado. O Streamlit Community Cloud roda nos EUA, então lá a API **não responde** e o app depende do snapshot commitado no repositório. Gere-o em um computador **no Brasil** e repita periodicamente para atualizar a base.
 
 ```bash
 python -m src.data_pipeline

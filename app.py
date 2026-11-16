@@ -270,7 +270,10 @@ def header(meta: dict) -> None:
     if meta.get("demo"):
         st.warning(
             "Não foi possível acessar o Portal de Dados Abertos da ANEEL nem um snapshot local. "
-            "Exibindo uma **amostra fictícia de demonstração**. Consulte o README para gerar o fallback em `data/snapshots/`.",
+            "Exibindo uma **amostra fictícia de demonstração**.\n\n"
+            "Os servidores da ANEEL costumam recusar conexões de fora do Brasil (como o Streamlit Cloud). "
+            "Para usar dados reais, rode `python -m src.data_pipeline` em um computador no Brasil e "
+            "faça commit da pasta `data/snapshots/` (veja o README).",
             icon=":material/info:",
         )
 
