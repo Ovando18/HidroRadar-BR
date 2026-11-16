@@ -1,0 +1,26 @@
+DatGeracaoConjuntoDados;NomEmpreendimento;CodCEG;SigUFPrincipal;SigTipoGeracao;DscFaseUsina;DatEntradaOperacao;MdaPotenciaOutorgadaKw;MdaPotenciaFiscalizadaKw;NumCoordNEmpreendimento;NumCoordEEmpreendimento;DscPropriRegimePariticipacao;DscSubBacia;DscMuninicpios
+2026-11-15;Demonstração Alto Paraná;UHE.PH.PR.900001-1.01;PR;UHE;Operação;2015-02-01;1450000,00;1450000,00;-24,050000;-54,250000;"50,00% para Energia Demo Paraná S.A. (PIE); 50,00% para Geradora Exemplo Sul Ltda. (PIE)";;Guaíra - PR, Mundo Novo - MS
+2026-11-15;Demonstração Cerrado Grande;UHE.PH.GO.900002-2.01;GO;UHE;Operação;2022-05-08;2080000,00;2080000,00;-18,410000;-49,100000;100,00% para Companhia Demo de Energia (PIE);;Itumbiara - GO/Araporã - MG
+2026-11-15;Demonstração Médio Tocantins;UHE.PH.TO.900003-3.01;TO;UHE;Operação;1989-03-24;902500,00;902500,00;-9,750000;-48,370000;100,00% para Hidro Demo Norte S.A. (PIE);;Palmas - TO
+2026-11-15;Demonstração Velho Chico;UHE.PH.BA.900004-4.01;BA;UHE;Operação;1981-11-24;1500000,00;1500000,00;-9,400000;-38,210000;100,00% para Companhia Demo do Nordeste (PIE);;Paulo Afonso - BA
+2026-11-15;Demonstração Xingu Médio;UHE.PH.PA.900005-5.01;PA;UHE;Construção;;350000,00;0,00;-3,300000;-52,100000;"60,00% para Consórcio Demo Amazônia (PIE); 40,00% para Energia Exemplo Pará (PIE)";;Altamira - PA
+2026-11-15;Demonstração Uruguai Norte;UHE.PH.SC.900006-6.01;SC;UHE;Operação;2009-02-19;1450000,00;1450000,00;-27,280000;-52,380000;100,00% para Geradora Exemplo Sul Ltda. (PIE);;Itá - SC, Aratiba - RS
+2026-11-15;Demonstração Iguaçu Baixo;UHE.PH.PR.900007-7.01;PR;UHE;Construção não iniciada;;340000,00;0,00;-25,550000;-53,500000;100,00% para Energia Demo Paraná S.A. (PIE);;Capanema - PR
+2026-11-15;Demonstração Serra Azul;PCH.PH.MG.900008-8.01;MG;PCH;Operação;2002-01-01;18500,00;18500,00;-20,250000;-43,800000;100,00% para PCH Demo Minas Ltda. (PIE);;Itabirito - MG
+2026-11-15;Demonstração Cachoeira Alta;PCH.PH.MG.900009-9.01;MG;PCH;Operação;1980-04-08;9800,00;9800,00;-21,480000;-44,640000;100,00% para PCH Demo Minas Ltda. (PIE);;Carrancas - MG
+2026-11-15;Demonstração Rio Claro;PCH.PH.GO.900010-0.01;GO;PCH;Operação;2007-10-01;27000,00;27000,00;-17,900000;-51,700000;100,00% para Goiás Energia Demo S.A. (PIE);;Jataí - GO
+2026-11-15;Demonstração Salto Verde;PCH.PH.MT.900011-1.01;MT;PCH;Operação;2010-04-23;29900,00;29900,00;-13,700000;-57,900000;"70,00% para Mato Grosso Demo Energia (PIE); 30,00% para Investimentos Exemplo (PIE)";;Campo Novo do Parecis - MT
+2026-11-15;Demonstração Juruena Norte;PCH.PH.MT.900012-2.01;MT;PCH;Construção;;24000,00;0,00;-13,500000;-58,800000;100,00% para Mato Grosso Demo Energia (PIE);;Sapezal - MT
+2026-11-15;Demonstração Taquari;PCH.PH.RS.900013-3.01;RS;PCH;Operação;2016-12-18;13200,00;13200,00;-29,160000;-51,870000;100,00% para Gaúcha Demo Energia Ltda. (PIE);;Muçum - RS
+2026-11-15;Demonstração Itajaí;PCH.PH.SC.900014-4.01;SC;PCH;Operação;2001-04-15;11000,00;11000,00;-27,030000;-49,390000;100,00% para Catarinense Demo Energia (PIE);;Apiúna - SC
+2026-11-15;Demonstração Ribeira;PCH.PH.SP.900015-5.01;SP;PCH;Construção não iniciada;;16000,00;0,00;-24,520000;-48,110000;100,00% para Paulista Demo Geração (PIE);;Eldorado - SP
+2026-11-15;Demonstração Doce Alto;PCH.PH.MG.900016-6.01;MG;PCH;Operação;2012-05-26;22000,00;22000,00;-20,410000;-42,900000;100,00% para PCH Demo Minas Ltda. (PIE);;Ponte Nova - MG
+2026-11-15;Demonstração Paraíba;PCH.PH.RJ.900017-7.01;RJ;PCH;Operação;1975-03-23;19500,00;19500,00;-21,990000;-42,910000;100,00% para Fluminense Demo Energia (PIE);;Sapucaia - RJ
+2026-11-15;Demonstração Sem Coordenada;PCH.PH.SC.900018-8.01;SC;PCH;Construção não iniciada;;8000,00;0,00;;;100,00% para Catarinense Demo Energia (PIE);;Chapecó - SC
+2026-11-15;Demonstração Moinho Velho;CGH.PH.RS.900019-9.01;RS;CGH;Operação;2002-06-09;900,00;900,00;-28,780000;-51,610000;100,00% para Gaúcha Demo Energia Ltda. (PIE);;Nova Prata - RS
+2026-11-15;Demonstração Queda Mansa;CGH.PH.SC.900020-0.01;SC;CGH;Operação;1984-04-25;1500,00;1500,00;-27,210000;-49,640000;100,00% para Catarinense Demo Energia (PIE);;Rio do Sul - SC
+2026-11-15;Demonstração Pedra Branca;CGH.PH.MG.900021-1.01;MG;CGH;Operação;1996-02-03;4800,00;4800,00;-21,240000;-44,990000;100,00% para PCH Demo Minas Ltda. (PIE);;Lavras - MG
+2026-11-15;Demonstração Ribeirão Fundo;CGH.PH.PR.900022-2.01;PR;CGH;Operação;1999-02-12;2500,00;2500,00;-25,210000;51,000000;100,00% para Energia Demo Paraná S.A. (PIE);;Prudentópolis - PR
+2026-11-15;Demonstração Sertãozinho;CGH.PH.GO.900023-3.01;GO;CGH;Operação;1997-10-09;3000,00;3000,00;-15,850000;-48,960000;100,00% para Goiás Energia Demo S.A. (PIE);;Pirenópolis - GO
+2026-11-15;Demonstração Cascata;CGH.PH.ES.900024-4.01;ES;CGH;Construção;;1200,00;0,00;-19,940000;-40,600000;100,00% para Capixaba Demo Energia (PIE);;Santa Teresa - ES
+2026-11-15;Demonstração Sem Rio;CGH.PH.BA.900025-5.01;BA;CGH;Operação;1977-12-15;600,00;600,00;-12,560000;-41,390000;100,00% para Baiana Demo Geração (PIE);;Lençóis - BA

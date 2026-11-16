@@ -1,0 +1,23 @@
+# Tema visual clean/institucional do HidroRadar-BR
+[theme]
+base = "light"
+primaryColor = "#0F4C81"
+backgroundColor = "#F8FAFC"
+secondaryBackgroundColor = "#FFFFFF"
+textColor = "#1E293B"
+borderColor = "#E2E8F0"
+linkColor = "#0F4C81"
+font = "sans-serif"
+baseRadius = "0.5rem"
+showSidebarBorder = true
+dataframeHeaderBackgroundColor = "#F1F5F9"
+
+[server]
+headless = true
+runOnSave = false
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"

@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Ambientes virtuais e segredos
+.venv/
+venv/
+env/
+.env
+.env.*
+.streamlit/secrets.toml
+
+# Temporários / sistema
+*.log
+*.tmp
+*.swp
+~$*.xlsx
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Planilhas exportadas localmente
+hidroradar_usinas_*.xlsx
