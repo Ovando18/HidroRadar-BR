@@ -54,13 +54,15 @@ SIGA_PACKAGE_ID = "siga-sistema-de-informacoes-de-geracao-da-aneel"
 SIGA_RESOURCE_HINTS = ("siga-empreendimentos-geracao-diario", "siga-empreendimentos-geracao")
 
 HIDRO_PACKAGE_IDS = (
+    # Fiscalização de Segurança de Barragens: CodCEG + NomRioEmpreendimento (rio de cada usina).
+    "fsb-fiscalizacao-de-seguranca-de-barragens",
     "aproveitamentos-hidreletricos",
     "aproveitamentos-hidreletricos-inventariados",
     "inventario-hidreletrico",
     "usinas-hidreletricas",
 )
-HIDRO_SEARCH_TERMS = ("aproveitamentos hidreletricos", "inventario hidreletrico", "usinas hidreletricas bacia rio")
-HIDRO_RESOURCE_HINTS = ("aproveitamento", "hidrel", "inventario", "usina")
+HIDRO_SEARCH_TERMS = ("fiscalizacao seguranca barragens", "aproveitamentos hidreletricos", "inventario hidreletrico", "usinas hidreletricas bacia rio")
+HIDRO_RESOURCE_HINTS = ("seguranca-barragem", "barragem", "aproveitamento", "hidrel", "inventario", "usina")
 
 AGENTES_PACKAGE_IDS = (
     "agentes-de-geracao-de-energia-eletrica",
@@ -126,7 +128,7 @@ HIDRO_ALIASES: dict[str, list[str]] = {
     "CodCEG": ["CEG", "CodigoCEG", "IdeCEG", "CodCEGUsina"],
     "NomBacia": ["Bacia", "DscBacia", "NomeBacia", "NomBaciaHidrografica", "BaciaHidrografica"],
     "NomSubBacia": ["SubBacia", "DscSubBacia", "NomeSubBacia", "NomSubBaciaHidrografica"],
-    "NomRio": ["Rio", "DscRio", "NomeRio", "NomCursoDagua", "DscCursoDagua", "CursoDagua", "NomCorpoHidrico"],
+    "NomRio": ["NomRioEmpreendimento", "Rio", "DscRio", "NomeRio", "NomCursoDagua", "DscCursoDagua", "CursoDagua", "NomCorpoHidrico"],
 }
 
 AGENTES_ALIASES: dict[str, list[str]] = {
@@ -741,6 +743,11 @@ def transform_siga(raw: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def _most_frequent(values: pd.Series):
+    counts = values.dropna().value_counts()
+    return counts.index[0] if not counts.empty else pd.NA
+
+
 def merge_hidro(df: pd.DataFrame, hidro: pd.DataFrame | None) -> pd.DataFrame:
     out = df.copy()
     if hidro is not None and not hidro.empty:
@@ -750,9 +757,11 @@ def merge_hidro(df: pd.DataFrame, hidro: pd.DataFrame | None) -> pd.DataFrame:
                 h[c] = pd.NA
         h["CEG_Key"] = h["CodCEG"].map(ceg_key)
         h = h[h["CEG_Key"] != ""]
-        # Prefere o registro mais completo de cada CEG.
-        h["_score"] = h[["NomBacia", "NomSubBacia", "NomRio"]].notna().sum(axis=1)
-        h = h.sort_values("_score", ascending=False).drop_duplicates("CEG_Key")
+        # Bases como a de barragens têm vários registros por usina (um por barragem
+        # e por relatório): usa o valor mais frequente de cada coluna por CEG.
+        for c in ("NomBacia", "NomSubBacia", "NomRio"):
+            h[c] = h[c].map(lambda v: clean_name(v, fill=None))
+        h = h.groupby("CEG_Key", as_index=False)[["NomBacia", "NomSubBacia", "NomRio"]].agg(_most_frequent)
         out = out.merge(h[["CEG_Key", "NomBacia", "NomSubBacia", "NomRio"]], on="CEG_Key", how="left")
     else:
         out["NomBacia"] = pd.NA

@@ -48,7 +48,7 @@ HidroRadar-BR/
 | Base | Origem | Uso |
 |---|---|---|
 | **SIGA — Sistema de Informações de Geração** | [Portal de Dados Abertos ANEEL](https://dadosabertos.aneel.gov.br/dataset/siga-sistema-de-informacoes-de-geracao-da-aneel) — `package_show?id=siga-sistema-de-informacoes-de-geracao-da-aneel`, recurso `siga-empreendimentos-geracao-diario.csv` ou `siga-empreendimentos-geracao.csv` | Base principal (filtrada para UHE, PCH e CGH) |
-| **Aproveitamentos Hidrelétricos** | Portal de Dados Abertos ANEEL (descoberto via `package_show` / `package_search`) | Bacia, sub-bacia e rio por `CodCEG` |
+| **Fiscalização de Segurança de Barragens** | [Portal de Dados Abertos ANEEL](https://dadosabertos.aneel.gov.br/dataset/fsb-fiscalizacao-de-seguranca-de-barragens) — recurso `fiscalizacao-seguranca-barragem.csv` | Rio de cada usina (`NomRioEmpreendimento`) por `CodCEG`; com vários registros por usina, vale o nome mais frequente. A bacia é derivada do código da sub-bacia do SIGA |
 | **Agentes de Geração** | Portal de Dados Abertos ANEEL (descoberto via `package_show` / `package_search`) | Relação CEG × CNPJ × Agente |
 | **Cadastro CNPJ** | [BrasilAPI](https://brasilapi.com.br/docs#tag/CNPJ) — `/api/cnpj/v1/{cnpj}` | Razão social, endereço, contato e QSA (sob demanda) |
 

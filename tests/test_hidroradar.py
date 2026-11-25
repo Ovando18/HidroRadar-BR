@@ -136,3 +136,19 @@ def test_app_smoke_and_chained_filters():
     next(b for b in at.button if "Limpar" in b.label).click().run()
     assert at.multiselect(key="f_ufs").value == []
     assert at.session_state["f_tipos"] == ["PCH", "CGH"]
+
+
+def test_merge_hidro_barragens_usa_rio_mais_frequente():
+    siga = dp.transform_siga(pd.DataFrame({
+        "CodCEG": ["PCH.PH.MG.000001-1.01"], "NomEmpreendimento": ["X"], "SigTipoGeracao": ["PCH"],
+        "DscSubBacia": ["61 - Rio Grande"],
+    }))
+    fsb = dp.map_columns(pd.DataFrame({
+        "IdeNucleoCEG": [1, 1, 1], "CodCEG": ["PCH.PH.MG.000001-1.01"] * 3,
+        "NomRioEmpreendimento": ["RIO CAPIVARI", "Rio Capivari", "RIBEIRAO X"],
+        "DatEmissaoRelatorio": ["2024-01-01", "2025-01-01", "2023-01-01"],
+    }), dp.HIDRO_ALIASES)
+    assert dp._accept_hidro(fsb)
+    out = dp.merge_hidro(siga, fsb[["CodCEG", "NomRio"]])
+    assert out.loc[0, "NomRio"] == "Rio Capivari"
+    assert out.loc[0, "NomBacia"] == "Rio Paraná"  # derivada do código da sub-bacia
