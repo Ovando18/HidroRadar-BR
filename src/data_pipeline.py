@@ -46,6 +46,11 @@ import streamlit as st
 
 logger = logging.getLogger(__name__)
 
+# Fora do app (ex.: `python -m src.data_pipeline`) o Streamlit avisa "No runtime found"
+# ao usar @st.cache_data. É esperado e inofensivo, então o aviso é silenciado.
+if not st.runtime.exists():
+    logging.getLogger("streamlit.runtime.caching.cache_data_api").setLevel(logging.ERROR)
+
 # --------------------------------------------------------------------------- #
 # Configuração
 # --------------------------------------------------------------------------- #
@@ -471,6 +476,8 @@ def read_csv_bytes(content: bytes) -> pd.DataFrame:
 def _download_csv(session: requests.Session, net: _NetState, url: str) -> pd.DataFrame | None:
     if net.offline:
         return None
+    started = datetime.now()
+    logger.info("  baixando %s", url.rsplit("/", 1)[-1] or url)
     try:
         with session.get(url, timeout=HTTP_TIMEOUT, stream=True) as r:
             r.raise_for_status()
@@ -479,7 +486,10 @@ def _download_csv(session: requests.Session, net: _NetState, url: str) -> pd.Dat
                 buf.write(chunk)
                 if buf.tell() > MAX_DOWNLOAD_BYTES:
                     raise ValueError("arquivo acima do limite de tamanho")
-        return read_csv_bytes(buf.getvalue())
+        df = read_csv_bytes(buf.getvalue())
+        elapsed = (datetime.now() - started).total_seconds()
+        logger.info("  ok: %.1f MB, %s linhas em %.0f s", buf.tell() / 1e6, f"{len(df):,}".replace(",", "."), elapsed)
+        return df
     except (requests.RequestException, ValueError) as exc:
         logger.warning("Download falhou (%s): %s", url, exc)
         net.avisos.append(f"Falha ao baixar recurso da ANEEL: {type(exc).__name__}.")
@@ -592,6 +602,7 @@ def _write_snapshot(df: pd.DataFrame, name: str) -> None:
 # Carga de cada base
 # --------------------------------------------------------------------------- #
 def _load_siga(session: requests.Session, net: _NetState) -> tuple[pd.DataFrame, dict]:
+    logger.info("[1/3] SIGA (empreendimentos de geração)")
     info: dict[str, Any] = {"fonte": None, "url": None, "modificado": None, "demo": False}
     df: pd.DataFrame | None = None
 
@@ -665,6 +676,8 @@ def _load_aux(
         df, path = _read_local([sample])
         return (map_columns(df, aliases), "Amostra de demonstração") if df is not None else (None, "Indisponível")
 
+    logger.info("[%s] %s", "2/3" if kind == "hidro" else "3/3",
+                "Rio por usina (Segurança de Barragens)" if kind == "hidro" else "Agentes de geração (CNPJ)")
     df, url = _discover_dataset(session, net, **cfg)
     if df is not None:
         keep = [c for c in aliases if c in df.columns]
@@ -938,12 +951,27 @@ def main() -> None:  # pragma: no cover - utilitário de linha de comando
     parser.add_argument("--snapshot", action="store_true", help="baixa as bases e grava data/snapshots/")
     parser.add_argument("--offline", action="store_true", help="usa somente fallback local")
     args = parser.parse_args()
-    logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
+    logging.basicConfig(level=logging.WARNING, format="%(message)s")
+    logger.setLevel(logging.INFO)
+    logging.getLogger("urllib3").setLevel(logging.ERROR)  # novas tentativas já aparecem no resumo
+    print("HidroRadar-BR · gerando bases a partir da ANEEL (pode levar alguns minutos)...")
     df, meta = build_dataset(offline=args.offline)
-    print(f"Registros: {len(df)} | " + " | ".join(f"{k}={v}" for k, v in meta.items() if k != "avisos"))
+    rio = (df["NomRio"] != NAO_INFORMADO).mean()
+    print(
+        f"\nResumo\n  SIGA:     {meta['fonte_siga']} (base de {meta['data_base']})"
+        f"\n  Rio:      {meta['fonte_hidro']} ({rio:.0%} das usinas)"
+        f"\n  Agentes:  {meta['fonte_agentes']}"
+        f"\n  Usinas:   {len(df)} " + str(df["SigTipoGeracao"].value_counts().to_dict())
+    )
     for aviso in meta["avisos"]:
-        print("AVISO:", aviso)
-    print(df["SigTipoGeracao"].value_counts().to_string())
+        print("  AVISO:", aviso)
+    baixou = [n for n, k in (("SIGA", "fonte_siga"), ("rio", "fonte_hidro"), ("agentes", "fonte_agentes"))
+              if str(meta[k]).startswith(("API", "ANEEL"))]
+    if baixou:
+        print(f"\nAtualizado da ANEEL: {', '.join(baixou)}. Snapshots em {SNAPSHOT_DIR}.")
+        print("Próximo passo: git add data/snapshots, git commit e git push.")
+    else:
+        print("\nA ANEEL não respondeu: nada foi atualizado e não há o que commitar.")
 
 
 if __name__ == "__main__":  # pragma: no cover
