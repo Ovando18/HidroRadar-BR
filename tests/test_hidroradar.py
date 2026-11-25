@@ -70,8 +70,18 @@ def test_bacia_derivada_do_codigo_da_subbacia():
 
 # ---------------------------------------------------------------- pipeline ---
 @pytest.fixture(scope="module")
-def dataset():
-    return dp.build_dataset(offline=True)
+def dataset(tmp_path_factory):
+    """Usa só a amostra de demonstração, ignorando snapshots reais commitados."""
+    import shutil
+
+    data_dir = tmp_path_factory.mktemp("data")
+    shutil.copytree(dp.SAMPLE_DIR, data_dir / "sample")
+    original = dp.DATA_DIR
+    dp.DATA_DIR = data_dir
+    try:
+        yield dp.build_dataset(offline=True)
+    finally:
+        dp.DATA_DIR = original
 
 
 def test_pipeline_offline_uses_demo_sample(dataset):

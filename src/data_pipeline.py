@@ -172,7 +172,7 @@ def clean_name(value: Any, *, fill: str | None = NAO_INFORMADO) -> str | None:
         words = s.lower().split(" ")
         s = " ".join(
             w if (i > 0 and w in _LOWER_WORDS)
-            else w.upper() if ("." in w and len(w) <= 6)  # siglas como "S.A." e "S/A"
+            else w.upper() if (("." in w or "/" in w) and len(w) <= 6)  # siglas como "S.A." e "S/A"
             else w[:1].upper() + w[1:]
             for i, w in enumerate(words)
         )

@@ -193,9 +193,14 @@ def sidebar_filters(df: pd.DataFrame) -> pd.DataFrame:
     subs = multiselect("Sub-bacia", sorted(out["NomSubBacia"].dropna().unique(), key=normalize_search_text), "f_subs", placeholder="Todas as sub-bacias")
     if subs:
         out = out[out["NomSubBacia"].isin(subs)]
-    rios = multiselect("Rio", sorted(out["NomRio"].dropna().unique(), key=normalize_search_text), "f_rios", placeholder="Todos os rios")
-    if rios:
-        out = out[out["NomRio"].isin(rios)]
+    rio_opts = sorted(out["NomRio"].dropna().unique(), key=normalize_search_text)
+    if any(r != NAO_INFORMADO for r in rio_opts):
+        rios = multiselect("Rio", rio_opts, "f_rios", placeholder="Todos os rios")
+        if rios:
+            out = out[out["NomRio"].isin(rios)]
+    else:
+        st.session_state.pop("f_rios", None)
+        sb.caption("Rio: não disponível na base atual (dataset de Aproveitamentos Hidrelétricos não carregado).")
 
     # 4. Características técnicas ----------------------------------------
     sb.markdown("<div class='hr-side-title'>Características técnicas</div>", unsafe_allow_html=True)
