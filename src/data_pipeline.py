@@ -743,6 +743,49 @@ def transform_siga(raw: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+_CURSOS_DAGUA = {
+    "rio", "ribeirao", "corrego", "arroio", "lajeado", "lageado", "riacho", "igarape", "sanga",
+    "canal", "braco", "furo", "lago", "lagoa", "represa", "reservatorio", "cachoeira",
+}
+
+
+def _title_pt(text: str) -> str:
+    words = re.sub(r"\s+", " ", text).strip().lower().split(" ")
+    return " ".join(
+        w if (i > 0 and w in _LOWER_WORDS) else w[:1].upper() + w[1:] for i, w in enumerate(words)
+    )
+
+
+def standardize_rivers(series: pd.Series) -> pd.Series:
+    """
+    Unifica grafias do mesmo rio ("RIO GRANDE", "grande", "Rio Grande" → "Rio Grande";
+    "Jacui"/"Jacuí" → "Rio Jacuí"): agrupa por nome sem acento/caixa/prefixo "Rio",
+    escolhe a grafia mais frequente (preferindo a acentuada) e prefixa "Rio" quando
+    o nome não começa com outro tipo de curso d'água (ribeirão, córrego, arroio...).
+    """
+
+    def key(name: str) -> str:
+        return re.sub(r"^rio\s+", "", normalize_search_text(name))
+
+    names = series.dropna()
+    names = names[names.astype(str).str.strip() != ""]
+    if names.empty:
+        return series
+    bare = names.map(lambda n: re.sub(r"^rio\s+", "", str(n).strip(), flags=re.I))
+    frame = pd.DataFrame({"key": names.map(key), "bare": bare})
+    canonical: dict[str, str] = {}
+    for k, grp in frame.groupby("key"):
+        counts = grp["bare"].value_counts()
+        ranked = sorted(
+            counts.index,
+            key=lambda n: (-(normalize_search_text(n) != n.lower()), str(n).isupper(), -counts[n]),
+        )
+        best = _title_pt(ranked[0])
+        first = normalize_search_text(best).split(" ")[0]
+        canonical[k] = best if first in _CURSOS_DAGUA else _title_pt(f"Rio {best}")
+    return series.map(lambda v: canonical.get(key(v), v) if isinstance(v, str) and v.strip() else v)
+
+
 def _most_frequent(values: pd.Series):
     counts = values.dropna().value_counts()
     return counts.index[0] if not counts.empty else pd.NA
@@ -761,6 +804,7 @@ def merge_hidro(df: pd.DataFrame, hidro: pd.DataFrame | None) -> pd.DataFrame:
         # e por relatório): usa o valor mais frequente de cada coluna por CEG.
         for c in ("NomBacia", "NomSubBacia", "NomRio"):
             h[c] = h[c].map(lambda v: clean_name(v, fill=None))
+        h["NomRio"] = standardize_rivers(h["NomRio"])
         h = h.groupby("CEG_Key", as_index=False)[["NomBacia", "NomSubBacia", "NomRio"]].agg(_most_frequent)
         out = out.merge(h[["CEG_Key", "NomBacia", "NomSubBacia", "NomRio"]], on="CEG_Key", how="left")
     else:

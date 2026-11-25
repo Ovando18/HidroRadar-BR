@@ -152,3 +152,14 @@ def test_merge_hidro_barragens_usa_rio_mais_frequente():
     out = dp.merge_hidro(siga, fsb[["CodCEG", "NomRio"]])
     assert out.loc[0, "NomRio"] == "Rio Capivari"
     assert out.loc[0, "NomBacia"] == "Rio Paraná"  # derivada do código da sub-bacia
+
+
+def test_standardize_rivers_unifica_grafias():
+    s = pd.Series(["Grande", "RIO GRANDE", "grande", "Rio Grande", "Jacui", "Jacuí", "Jacuí",
+                   "Ribeirão das lajes", "RIO RIBEIRÃO DAS LAJES", None])
+    out = dp.standardize_rivers(s)
+    assert set(out[:4]) == {"Rio Grande"}
+    assert set(out[4:7]) == {"Rio Jacuí"}
+    assert set(out[7:9]) == {"Ribeirão das Lajes"}
+    assert pd.isna(out.iloc[9])
+    assert list(dp.standardize_rivers(pd.Series(["do Peixe", "Paraná"]))) == ["Rio do Peixe", "Rio Paraná"]
